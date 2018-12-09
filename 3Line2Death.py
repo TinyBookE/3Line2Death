@@ -59,6 +59,18 @@ class Record(db.Model):
 
 
 # 点赞功能
+"""
+输入 json:
+{
+    noteId:被投票作品id
+    openid:用户id
+}
+返回 json:
+{
+    code:结果代码
+    msg:结果详细信息
+}
+"""
 @app.route('/3Line2Death/praise', methods=['POST'])
 def Praise():
     if request.headers['Content-Type'] != 'application/json':
@@ -85,6 +97,21 @@ def Praise():
 
 
 # 上传作品
+"""
+输入 json:
+{
+    content:上传内容
+    name:用户名称
+    head:用户头像url
+    openid:用户id
+}
+返回 json:
+{
+    code:结果代码
+    msg:结果详细信息
+    data:若有完全重复, 则会返回已收录的遗书记录
+}
+"""
 @app.route('/3Line2Death/upload', methods=['POST'])
 def Upload():
     if request.headers['Content-Type'] != 'application/json':
@@ -113,6 +140,27 @@ def Upload():
 
 
 # 查询全部作品
+"""
+输入 json:
+{
+    sortWay:排序方式
+            可选参数 0(按投票数从高到低)/1(按时间从前往后)
+    openid:用户id
+}
+返回 json:
+{
+    code:结果代码
+    msg:结果详细信息
+    data:结果数据
+        {
+            noteId:作品id
+            content:内容
+            name:作者姓名
+            head:作者头像url
+            flag:是否投过票
+        }
+}
+"""
 @app.route('/3Line2Death/search/all', methods=['POST'])
 def SearchAll():
     if request.headers['Content-Type'] != 'application/json':
@@ -139,6 +187,28 @@ def SearchAll():
 
 
 # 查询单个作品
+"""
+输入 json:
+{
+    sender:查询自己作品或指定他人作品
+           可选参数 writer/reader
+    openid:用户openid
+    noteid:查询他人作品需要的遗书id
+}
+返回 json:
+{
+    code:结果代码
+    msg:结果详细信息
+    data:结果数据
+        {
+            noteId:作品id
+            content:内容
+            name:作者姓名
+            head:作者头像url
+            flag:是否投过票
+        }
+}
+"""
 @app.route('/3Line2Death/search/one', methods=['POST'])
 def SearchOne():
     if request.headers['Content-Type'] != 'application/json':
