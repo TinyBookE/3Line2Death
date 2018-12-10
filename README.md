@@ -81,8 +81,8 @@ Responds:
            }
 }
 
-#### 上传
-POST 202.114.205.217:2333/3Line2Death/upload
+#### 查询单个作品
+POST 202.114.205.217:2333/3Line2Death/searchone
 
 Headers:
 Content-Type:application/json
