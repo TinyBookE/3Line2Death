@@ -47,7 +47,7 @@ Responds:
 }
 
 #### 查询全部作品
-POST 202.114.205.217:2333/3Line2Death/searchall
+POST 202.114.205.217:2333/3Line2Death/search/all
 
 Headers:
 Content-Type:application/json
@@ -82,7 +82,7 @@ Responds:
 }
 
 #### 查询单个作品
-POST 202.114.205.217:2333/3Line2Death/searchone
+POST 202.114.205.217:2333/3Line2Death/search/one
 
 Headers:
 Content-Type:application/json
