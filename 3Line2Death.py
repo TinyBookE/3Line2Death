@@ -3,15 +3,15 @@ from flask_sqlalchemy import SQLAlchemy
 import requests
 
 # 数据库信息
-duser = 'root'
-dpwd = ''
+duser = '3Line2Death'
+dpwd = 'u5fkR8YIHHvSrumQ'
 daddr = 'localhost'
 dport = 3306
 dname = '3Line2Death'
 
 # app信息
 port = 2333
-host = 'localhost'
+host = '202.114.205.217'
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{}:{}@{}:{}/{}'.format(duser, dpwd, daddr, dport, dname)
@@ -35,16 +35,17 @@ class Note(db.Model):
         self.numOfPraise = numOfPriase
 
     def todict(self, flag = 0):
+        l = self.content.split('|')
         if flag == 0:
-            return {'noteId':self.noteId, 'content':self.content,
-                    'name':self.name, 'numOfPraise':self.numOfPraise,
+            return {'noteId':self.noteId, 'first':l[0], 'second':l[1],
+                    'third':l[2],'name':self.name, 'numOfPraise':self.numOfPraise,
                     'head':self.head}
         if flag is None:
-            return {'noteId':self.noteId, 'content':self.content,
-                    'name':self.name, 'numOfPraise':self.numOfPraise,
+            return {'noteId':self.noteId,'first':l[0], 'second':l[1],
+                    'third':l[2],'name':self.name, 'numOfPraise':self.numOfPraise,
                     'flag':False, 'head':self.head}
-        return {'noteId': self.noteId, 'content': self.content,
-                'writer': self.writer, 'numOfPraise': self.numOfPraise,
+        return {'noteId': self.noteId,'first':l[0], 'second':l[1],
+                'third':l[2],'writer': self.writer, 'numOfPraise': self.numOfPraise,
                 'flag': True, 'head':self.head}
 
 
@@ -100,7 +101,9 @@ def Praise():
 """
 输入 json:
 {
-    content:上传内容
+    first: 第一行
+    second: 第二行
+    third: 第三行
     name:用户名称
     head:用户头像url
     openid:用户id
@@ -117,16 +120,17 @@ def Upload():
     if request.headers['Content-Type'] != 'application/json':
         return jsonify({'code':10001, 'msg': '格式出错，需求json'})
     form = request.json
-    if 'content' not in form or 'name' not in form\
-            or 'head' not in form or 'openid' not in form:
+    if 'first' not in form or 'name' not in form\
+            or 'head' not in form or 'openid' not in form\
+            or 'second' not in form or 'third' not in form:
         return jsonify({'code': 10002, 'msg': '信息出错'})
 
-    content = form['content']
+    content = form['first']+'|'+form['second']+'|'+form['third']
     name = form['name']
     head = form['head']
     openid = form['openid']
-    if not Check(openid):
-        return jsonify({'code': 10003, 'msg': '用户未绑定'})
+    #if not Check(openid):
+     #   return jsonify({'code': 10003, 'msg': '用户未绑定'})
     note = Note.query.filter_by(content=content).first()
     if not note is None:
         return jsonify({'code':1, 'msg':'已收录该遗书','data': note.todict()})
@@ -154,7 +158,9 @@ def Upload():
     data:结果数据
         {
             noteId:作品id
-            content:内容
+            first:
+            second:
+            third:
             name:作者姓名
             head:作者头像url
             flag:是否投过票
@@ -167,9 +173,13 @@ def SearchAll():
         return jsonify({'code':10001, 'msg': '格式出错，需求json'})
     sortWay = request.json['sortWay']
     openid = request.json['openid']
+    page = request.json['page']
     # 投票数排序
     if sortWay == 0:
-        note = Note.query.order_by(db.desc(Note.numOfPraise)).all()
+        if page == 0:
+            note = Note.query.order_by(db.desc(Note.numOfPraise)).all()
+        else:
+            note = Note.query.order_by(db.desc(Note.numOfPraise)).paginate(page,10,False).items
         t = {'code': 0, 'msg': '成功', 'data':{}}
         for i in range(len(note)):
             flag = Record.query.filter_by(noteId=note[i].noteId, openid=openid).first()
@@ -177,7 +187,10 @@ def SearchAll():
         return jsonify(t)
     # 发布时间排序
     elif sortWay == 1:
-        note = Note.query.order_by(Note.noteId).all()
+        if page == 0:
+            note = Note.query.order_by(Note.noteId).all()
+        else:
+            note = Note.query.order_by(Note.noteId).paginate(page,10,False).items
         t = {'code': 0, 'msg': '成功', 'data':{}}
         for i in range(len(note)):
             flag = Record.query.filter_by(noteId=note[i].noteId, openid=openid).first()
@@ -202,7 +215,9 @@ def SearchAll():
     data:结果数据
         {
             noteId:作品id
-            content:内容
+            first:
+            second:
+            third:
             name:作者姓名
             head:作者头像url
             flag:是否投过票
