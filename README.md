@@ -4,3 +4,6 @@
 - python 3.6
 - mysql 8.0
 - flask
+- requests
+- flask
+- flask_sqlalchemy
