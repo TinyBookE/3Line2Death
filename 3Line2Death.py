@@ -74,7 +74,8 @@ class Record(db.Model):
 """
 @app.route('/3Line2Death/praise', methods=['POST'])
 def Praise():
-    if request.headers['Content-Type'] != 'application/json':
+    Content_Type = request.headers['Content-Type'].split(';')
+    if 'application/json' not in Content_Type:
         return jsonify({'code':10001, 'msg': '格式出错，需求json'})
     form = request.json
     if 'noteId' not in form or 'openid' not in form:
@@ -117,7 +118,8 @@ def Praise():
 """
 @app.route('/3Line2Death/upload', methods=['POST'])
 def Upload():
-    if request.headers['Content-Type'] != 'application/json':
+    Content_Type = request.headers['Content-Type'].split(';')
+    if 'application/json' not in Content_Type:
         return jsonify({'code':10001, 'msg': '格式出错，需求json'})
     form = request.json
     if 'first' not in form or 'name' not in form\
@@ -169,7 +171,8 @@ def Upload():
 """
 @app.route('/3Line2Death/search/all', methods=['POST'])
 def SearchAll():
-    if request.headers['Content-Type'] != 'application/json':
+    Content_Type = request.headers['Content-Type'].split(';')
+    if 'application/json' not in Content_Type:
         return jsonify({'code':10001, 'msg': '格式出错，需求json'})
     sortWay = request.json['sortWay']
     openid = request.json['openid']
@@ -226,7 +229,8 @@ def SearchAll():
 """
 @app.route('/3Line2Death/search/one', methods=['POST'])
 def SearchOne():
-    if request.headers['Content-Type'] != 'application/json':
+    Content_Type = request.headers['Content-Type'].split(';')
+    if 'application/json' not in Content_Type:
         return jsonify({'code':10001, 'msg': '格式出错，需求json'})
 
     sender = request.json['sender']
