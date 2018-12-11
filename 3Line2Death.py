@@ -129,8 +129,8 @@ def Upload():
     name = form['name']
     head = form['head']
     openid = form['openid']
-    #if not Check(openid):
-     #   return jsonify({'code': 10003, 'msg': '用户未绑定'})
+    if not Check(openid):
+        return jsonify({'code': 10003, 'msg': '用户未绑定'})
     note = Note.query.filter_by(content=content).first()
     if not note is None:
         return jsonify({'code':1, 'msg':'已收录该遗书','data': note.todict()})
